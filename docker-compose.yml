@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: devops/docker/web/Dockerfile
+      args:
+        DEPLOY: local
+    ports:
+      - "40000:80"
+    volumes:
+      - laravue-code:/code
+
+  app:
+    build:
+      context: .
+      dockerfile: devops/docker/app/Dockerfile
+      args:
+        DEPLOY: local
+    volumes:
+      - laravue-code:/code
+    environment:
+      - PHP_IDE_CONFIG=serverName=laravue-app
+      - COMPOSER_MEMORY_LIMIT=-1
+
+  db:
+    build:
+      context: devops/docker/db
+      dockerfile: Dockerfile
+      args:
+        DEPLOY: local
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - laravue-code:/code
+
+  mongo:
+    command:
+      # 開発用にログを出力する
+      - "--profile=1"
+      - "--slowms=-1"
+
+# https://qiita.com/kunit/items/36d9e5fa710ad26f8010
+# https://forums.docker.com/t/nfs-native-support/48531/4
+volumes:
+  laravue-code:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,actimeo=1,nolock
+      #      o: addr=addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}"
