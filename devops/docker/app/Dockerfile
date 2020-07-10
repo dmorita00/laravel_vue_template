@@ -83,8 +83,8 @@ RUN set -eux \
  # pdo_mysql
  && docker-php-ext-install pdo_mysql \
  # mongodb
- && pecl install mongodb \
- && docker-php-ext-enable mongodb \
+# && pecl install mongodb \
+# && docker-php-ext-enable mongodb \
  # xdebug
  && if [ "$DEPLOY" = "local" ] ; then \
       pecl install xdebug; \
@@ -97,13 +97,13 @@ RUN set -eux \
  && docker-php-ext-configure opcache --enable-opcache \
  && docker-php-ext-install opcache \
  # zip
- && docker-php-ext-install zip \
+ && docker-php-ext-install zip
  # SQLServer
- && pecl install sqlsrv \
- && pecl install pdo_sqlsrv \
- && docker-php-ext-enable sqlsrv \
- && docker-php-ext-enable pdo_sqlsrv \
- && docker-php-ext-install bcmath
+# && pecl install sqlsrv \
+# && pecl install pdo_sqlsrv \
+# && docker-php-ext-enable sqlsrv \
+# && docker-php-ext-enable pdo_sqlsrv \
+# && docker-php-ext-install bcmath
 
 COPY devops/docker/app /code/devops/docker/app
 
@@ -131,7 +131,7 @@ RUN set -eux \
       php artisan route:cache; \
     fi \
  && chown -R www-data:www-data storage \
- && chown -R www-data:www-data resources/data \
+# && chown -R www-data:www-data resources/data \
  # tinkerで /var/www/.configに書き込むので
  && chown -R www-data:www-data /var/www
 
